@@ -194,7 +194,7 @@ Skill 指令后续加入“修复记录”可选输入和查卡组合路由；�
 ## 11. 后续使用方式（拟议）
 
 ```text
-$ut-diff-report
+$ut-analysis
 报告：docs/ut_result.html
 修复记录：docs/result.md
 查找 UT：test_retry_after_timeout

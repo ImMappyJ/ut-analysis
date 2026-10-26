@@ -47,7 +47,7 @@ Skill 0.2.0 · 模板 1.1.0 · Canonical Schema 1.1.0（compare 兼容旧 1.0.0�
 - 高代码覆盖率不能抵消核心需求缺口；缺需求/缺覆盖/混合测试范围/缺正式政策均不会无依据整体 PASS。
 - 不同 SHA、分析目录或源码指纹的运行证据会被拒绝；合法对照可通过。
 - Skill 官方结构校验、发布结构/基本隐私检查、固定样式 SHA 校验、HTML 结构/计数校验及 JS 语法检查通过。
-- 当前 Codex 本地 app-server 的 skills/list 强制刷新可发现唯一 ut-diff-report，更新后的 audit/branches 元数据已核实；此发现检查不启动模型推理。
+- 当前 Codex 本地 app-server 的 skills/list 强制刷新可发现当时安装的唯一技能入口，更新后的 audit/branches 元数据已核实；此发现检查不启动模型推理。
 
 完整私有命令/日志位于本地 .artifacts，已排除分发与 Git；本页仅保存可公开的验收结论。
 

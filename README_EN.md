@@ -1,59 +1,39 @@
 # UT-Analysis
 
-[中文](README.md) · Skill **0.7.1** · Template **1.3.0** · Schema **1.1.0** · MIT
+[中文](README.md) · [Installation](docs/installation.md) · [Usage](docs/usage.md) · [Changelog](CHANGELOG.md)
 
-Analyze one project's unit tests against product requirements and acceptance criteria. Explain
-assertion weaknesses, missing business scenarios and prioritized next tests. Two-project/branch Diff
-is optional. The project is **UT-Analysis** and the invocation is `$ut-analysis`. The old `$ut-diff-report` installation is migrated; Python imports from `ut_diff_report` remain compatible.
+**Analyze unit tests against product requirements, identify important gaps, and track repairs.**
 
-```text
-$ut-analysis
-Project: ./my-project
-Requirements: ./docs/acceptance.md
-Scope: ordering module
-Trace the existing UTs to acceptance criteria and prioritize assertion and scenario gaps.
-```
+UT-Analysis is an installable Codex Skill that connects requirements, test code, assertions and execution evidence in a standalone interactive HTML report. Single-project analysis is the primary workflow; project and Git-branch comparisons are optional.
 
-One project automatically selects audit without asking for project B.
-See [single-project analysis](references/single-project-analysis.md).
+| Project information | Version / entry point |
+| --- | --- |
+| Skill | `0.7.1` · `$ut-analysis` |
+| Report template / Schema | `1.3.0` / `1.1.0` |
+| Default output | `docs/ut_result.html` in the caller's workspace |
+| Runtime / License | Python 3.10+ · Standard library · [MIT](LICENSE) |
 
-## Retrieve requirements, quality and repair context
+## Features and modes
 
-Agents can read stored acceptance criteria, source excerpts, assertion evidence, quality findings,
-coverage/gates and repair reasons directly from an existing report. Users need not copy page text.
+| Mode | Input | Analysis |
+| --- | --- | --- |
+| `audit` | One project | Requirement traces, assertion quality, measured coverage and prioritized gaps |
+| `compare` | Two projects or branches | Side-by-side goals, scenarios, inputs, assertions and execution results |
+| `full` | Two projects and product goals | UT comparison plus requirement coverage and quality gates for both projects |
 
-```text
-python scripts/query_context.py <workspace>/docs/ut_result.html --file test_inventory.py --project A
-python scripts/query_context.py <workspace>/docs/ut_result.html --requirement REQ-INVALID --detail
-python scripts/query_context.py <workspace>/docs/ut_result.html --section progress --progress <workspace>/docs/ut-progress
-```
+Without an explicit mode, one project selects `audit` and two select `compare`. Request `full` for combined analysis.
 
-Queries default to paginated summaries and never execute tests or refresh historical conclusions.
-See [context queries](references/context-query.md) for Python APIs, evidence boundaries and iteration usage.
+- **Requirement traceability:** link acceptance criteria to tests and assertion evidence; distinguish sufficient, partial, uncovered and uncertain coverage.
+- **Evidence-based conclusions:** use measured coverage and explicit quality gates; missing evidence stays visible.
+- **Isolated branch analysis:** explicit branches use separate Worktrees, preserving the original checkout and uncommitted changes.
+- **Offline reports:** module and owner grouping, search, filters, pagination and expandable evidence. Matching and execution statuses remain separate.
+- **Ongoing iteration:** query cards by test name or file, retrieve requirement/quality/repair context and incrementally synchronize repair notes.
 
-The optional comparison workflow matches unit tests across two projects by business goal,
-scenario, inputs, assertions and observed execution. Generates a standalone, offline HTML
-report with aligned side-by-side Diff rows, unilateral blank placeholders, summary cards,
-search, module/owner/status/priority filters, pagination and lazy disclosures.
+## Installation
 
-Matching and execution are separate: two passing tests do not establish equivalent behavior.
-Modes: **audit** (one project), **compare** (two projects), **full** (Diff plus quality).
-Omitted mode selects audit for one project and compare for two; request full for combined quality analysis.
-Product requirement/assertion traceability, measured coverage and configurable quality gates are separate
-from semantic matching. Independent optional A/B branches use owned detached Worktrees; current dirty or
-detached working trees are preserved. Same-repository branch comparisons are supported without switching
-the user's checkout or silently fetching/falling back.
-The accepted visual baseline is preserved, with its private data and narratives removed.
-See the complete [synthetic HTML example](examples/sample_report.html), opened locally in a browser.
-All static example results are explicitly NOT RUN; the runnable demo captures actual synthetic test results.
-Additional complete examples: [audit](examples/audit_report.html), [full](examples/full_report.html).
+Requires Python **3.10+**, with no Python runtime dependencies. Go AST collection requires Go **1.18+**. Target tests need their own toolchains and dependencies.
 
-![Synthetic report preview](docs/images/report-preview.jpg)
-
-## Install on Windows
-
-Requires Python **3.10+**, no Python runtime dependencies. This is distributed as a Skill/source
-checkout, not a PyPI package. Go AST collection requires Go **1.18+**. Target tests need their own tools.
+### Windows PowerShell
 
 ```powershell
 git clone https://github.com/ImMappyJ/ut-analysis.git UT-Analysis
@@ -61,7 +41,7 @@ Set-Location UT-Analysis
 python scripts/install_skill.py --mode link
 ```
 
-## Install on Linux or macOS
+### Linux / macOS
 
 ```sh
 git clone https://github.com/ImMappyJ/ut-analysis.git UT-Analysis
@@ -69,128 +49,124 @@ cd UT-Analysis
 python3 scripts/install_skill.py --mode link
 ```
 
-Replace the placeholder repository URL with the actual shared repository. No remote repository is
-created by this project. Link mode uses a Windows junction or Unix symlink. Use `--mode copy` for an
-independent installation. Default: CODEX_HOME/skills, or ~/.codex/skills when unset.
-`--skills-dir <directory>` overrides it. Existing unrelated installations are never overwritten.
-Source development and installation directories remain separate.
-See [installation details](docs/installation.md), including safe copy updates and session refresh.
+Link mode uses a Windows junction or Unix symlink. Choose `--mode copy` for an independent copy. The default destination is `$CODEX_HOME/skills`, or `~/.codex/skills` when unset.
 
-## Invoke in Codex
+Invoke `$ut-analysis` in Codex after installation. Open a new session if the current session has not discovered the skill. This project is distributed as a Skill/source checkout, not a PyPI package. See [installation details](docs/installation.md) for updates, conflicts and custom directories.
+
+## Quick start
+
+### 1. Analyze one project against its requirements
 
 ```text
 $ut-analysis
-Compare project A: ./project-blue
-Compare project B: ./project-green
-Optional module owners: Example Owner Alpha owns inventory; Example Owner Beta owns notifications.
-Save docs/ut_result.html in the current workspace.
+Project: ./my-project
+Requirements: ./docs/acceptance.md
+Scope: ordering module
+Trace existing UTs to acceptance criteria and prioritize assertion and scenario gaps.
 ```
 
-| Input | Required | Meaning |
+No project B or hand-written JSON is required. The Agent interprets requirements and code; Python validates data, calculates statistics and gates, and renders reports. See [single-project analysis](references/single-project-analysis.md).
+
+### 2. Compare projects or branches
+
+```text
+$ut-analysis
+Mode: full
+Project A: ./my-project
+Branch A: main
+Project B: ./my-project
+Branch B: feature/refactor
+Product goals: ./requirements/acceptance.md
+Module owners: Example Owner Alpha owns ordering.
+```
+
+Use `compare` for UT comparison alone. A/B can refer to different repositories or the same repository. Branch choices are independent. Omitted branches use the current workspace, including recorded uncommitted changes.
+
+### Inputs
+
+| Parameter | Required | Meaning |
 | --- | --- | --- |
-| Project (alias A) | Yes | Explicit absolute/relative path, unique workspace directory or manifest name |
-| Project B | Only compare/full | A second project or another branch of the same repository |
-| Module owners | No | Natural-language business-module mapping; multiple owners/modules supported |
-| Destination | No | Caller workspace docs/ut_result.html by default |
-| Regeneration authorization | If output exists | Explicit request required before --replace |
-| Mode | No | One project → audit; two → compare; combined analysis → full |
-| Analysis scope | No | Whole project or named modules/files/requirements; preserve exclusions and denominators |
-| A/B branches | No | Independent refs; default current workspace; explicit refs use isolated Worktrees |
-| Product goals | No | Natural language or PRD/spec/acceptance paths; implementation is not authoritative requirements |
-| Coverage targets | No | Explicit approved percentages/core rules; no invented mandatory defaults |
+| Project / Project A | Yes | Absolute/relative path or a uniquely identifiable workspace project |
+| Project B | `compare` / `full` | Another project or version of the same repository |
+| Mode | No | `audit`, `compare` or `full` |
+| Branch A / B | No | Current workspace by default; explicit branches are isolated without automatic fetching |
+| Product goals / Requirements | No | Natural language, PRD, specification, user stories or acceptance document paths |
+| Scope | No | Entire project or selected modules, files or requirements; preserve exclusions and denominators |
+| Coverage targets | No | Explicit thresholds or core-requirement rules; no invented mandatory defaults |
+| Module owners | No | Natural-language module-to-owner mapping, including multiple owners |
+| Output | No | Defaults to `docs/ut_result.html`; explicitly request replacement of an existing report |
 
-The user does not author JSON/YAML. Codex reviews source, establishes goals and semantic decisions,
-then writes canonical JSON internally. Python validates references/evidence and performs deterministic
-statistics, line Diff and template rendering. Ambiguous projects require a candidate selection.
+## Example reports
 
-## Verify and try
+| Example | Contents |
+| --- | --- |
+| [Single-project audit](examples/audit_report.html) | Requirement coverage, quality findings and missing evidence |
+| [Project comparison](examples/sample_report.html) | Aligned cards, unilateral tests and assertion/scenario differences |
+| [Combined analysis](examples/full_report.html) | Switch between Diff, requirements, coverage and quality |
+| [Repair progress](examples/progress_report.html) | Changes, pending work, reasons and historical evidence |
+
+Download the HTML and open it locally. No CDN or service is required. Static examples contain synthetic data and `NOT RUN` test results; runnable demos collect execution evidence separately.
+
+![UT-Analysis comparison example](docs/images/report-preview.jpg)
+
+## Continue from an existing report
+
+### Query cards and context
+
+```text
+$ut-analysis
+Report: ./docs/ut_result.html
+Test file: tests/test_inventory.py
+Project: A
+Return all cards for this file with requirements, quality findings and repair progress.
+```
+
+Alternatively, provide a test name such as `test_reject_invalid`. Queries are read-only and do not scan source or execute tests. Ambiguous names return candidates.
 
 ```sh
-python3 -m unittest discover -s tests -v
-python3 scripts/validate_data.py examples/sample_input.json
-python3 scripts/validate_report.py examples/sample_report.html
-python3 scripts/demo_e2e.py --workspace .artifacts/demo
+python scripts/query_report.py report.html --file tests/test_inventory.py --project A
+python scripts/query_context.py report.html --requirement REQ-INVALID --detail
+python scripts/query_context.py report.html --section progress --progress ./docs/ut-progress
 ```
 
-Use `python` on Windows. Demo workspace must be empty. The demo copies and executes only bundled
-synthetic projects. Add `--without-owners --no-execution` with another new workspace to inspect honest
-NOT RUN behavior. Actual execution timestamps are retained; unchanged canonical data renders identical bytes.
+Context queries return paginated summaries by default. Use `--detail` for code, logs and evidence. See [card queries](references/card-query.md) and [context queries](references/context-query.md).
 
-From a different workspace, try the static template with:
+### Synchronize repair notes incrementally
 
-```text
-python <skill-root>/scripts/render_report.py <skill-root>/examples/sample_input.json --workspace .
+Repair Markdown is synchronized by task into the caller's `docs/ut-progress/`. Unchanged notes require only a hash check; only changed tasks need renewed analysis. The repair-progress view shows what changed, what remains and why.
+
+Repair records never replace historical execution results, semantic matches or quality gates. See [repair tracking](references/progress-tracking.md).
+
+## Verification and local demos
+
+Run from the repository root. On Linux/macOS, use `python3` if needed.
+
+```sh
+python -m unittest discover -s tests -v
+python scripts/check_release.py
+python scripts/validate_report.py examples/sample_report.html
+python scripts/demo_e2e.py --mode audit --workspace .artifacts/audit-demo
+python scripts/demo_e2e.py --workspace .artifacts/compare-demo
 ```
 
-This renders sample data only. Full comparison is the Agent workflow, not an automatic Python semantic matcher.
+Demo directories must be empty. Demos copy and execute only bundled synthetic projects. Missing requirement coverage remains visible even if every test passes. Add `--without-owners --no-execution` to inspect owner-free and unexecuted cases.
 
-## Scope and extension
+GitHub Actions defines a Windows/Linux/macOS × Python 3.10/3.12 matrix. See [Actions](https://github.com/ImMappyJ/ut-analysis/actions) for remote results and [verification records](docs/verification.md) for historical local evidence.
 
-Built-in collection: Python AST and Go AST. Runtime adapters: unittest, Go JSON and JUnit XML.
-Other frameworks use native collection/reporters, source review and the same canonical schema.
-Reconcile static inventory with native discovery; disclose dynamic/inherited/plugin/build-tag gaps.
-Count top-level test entries/templates once; suites, parameter rows and runtime children are separate evidence.
-No execution becomes NOT RUN, never a static PASS. Child equivalence needs explicit semantic keys.
-Missing tests establish evidence gaps, not missing implementation. Measured code coverage is a separate task.
+## Scope and limitations
 
-Owners attach to normalized business modules and do not imply completed review. Owner UI is hidden when
-absent. P0/P1 priority needs a business-impact reason. Execution is not sandboxed; audit external effects
-and dependencies first. No production/UT source rewrites, implicit dependency installation or publication.
+- Built-in Python/Go AST collection and unittest, Go JSON and JUnit runtime adapters. Other frameworks use native collection/reporters and the shared schema. Disclose dynamic-discovery and build-condition gaps.
+- Count top-level entries and parameter templates once; record child instances separately. Two passing tests do not establish equivalent business behavior. Missing UTs do not prove missing functionality.
+- Coverage comes from native artifacts: Go statement profiles, coverage.py, LCOV and Cobertura. Missing collection is not 0%; high coverage cannot cancel missing critical business scenarios.
+- Execution is not sandboxed. Review dependencies and external effects before running tests. The Skill does not automatically rewrite business code, migrate tests, install dependencies or publish projects.
+- Keep real business data, identities and logs in the caller's workspace. Public examples use synthetic data only.
 
-See [usage and parameters](docs/usage.md), [architecture](docs/architecture.md),
-[matching rules](references/matching-rules.md), [data schema](references/report-schema.md),
-[framework adapters](references/framework-adapters.md), [template extension](references/template-extension.md),
-[changelog](CHANGELOG.md) and [license](LICENSE).
+## Documentation
 
-Public fixtures/examples are synthetic. Keep real source/logs/owners/private data out of this repository.
-CI is configured for Windows/Linux/macOS and Python 3.10/3.12; remote CI execution requires a future push.
-Incremental semantic caches and automatic test migration are outside this release.
-
-Single-project example:
-
-```text
-$ut-analysis
-Mode: audit
-Project A: ./project-blue
-Product goals: ./requirements/acceptance.md
-Coverage targets: 85% lines; all core requirements need sufficient assertion evidence.
-```
-
-For same-repository full analysis, specify A and B as the same directory and independent branches such as
-main and feature/refactor. All collection/execution/coverage uses the prepared analysis_root. Preserve
-artifacts before cleanup_worktrees.py; it only removes ownership-verified clean temporary trees.
-
-Coverage readers: Go statement profiles (never relabeled lines/branches), coverage.py JSON, LCOV and
-Cobertura counts. Use run_tests.py --fresh-output and calculate_coverage.py to bind artifacts to invocation
-hashes/time/source context. Separate exporters require original test invocation and intermediate-data lineage.
-Missing collection is not 0%. No trustworthy product evidence/configured policy means INSUFFICIENT EVIDENCE,
-and high code coverage cannot cancel a failed core-requirement gate. Agent interprets goals; Python reproduces
-the structured gate calculation. Quality PASS is not product release acceptance.
-See [quality rules](references/quality-rules.md), [traceability](references/requirement-traceability.md),
-[coverage collection](references/coverage-collection.md) and [Git contexts](references/git-analysis.md).
-
-[Local verification and limitations](docs/verification.md)
-
-## Retrieve a UT card from an existing report
-
-Provide the report path and a UT name to `$ut-analysis`. The Agent calls `scripts/query_report.py`
-or `ut_diff_report.card_query.get_ut_card`, returning the original aligned or audit-only card with its
-assertions, execution evidence and relevant requirement traces. No source scan or tests run. Exact search
-is default; repeated names produce candidates. New templates support automatic card-focus links; older
-embedded-data reports remain readable without modification. See [query contract](references/card-query.md).
-
-### All cards for a test file
-
-Use `get_ut_cards(report_path, 'tests/test_inventory.py', project='A')` or
-`python scripts/query_report.py report.html --file tests/test_inventory.py --project A`.
-Returns every distinct matching card with its counterpart and evidence; no truncation.
-Absolute file paths require --project-root. Omit project to search both sides.
-See [the query contract](references/card-query.md).
-
-## Incremental repair notes and summary-first queries
-
-Version 0.5.0 prepares only changed Markdown task sections for Agent annotation and persists immutable snapshots. Unchanged notes need no repeated semantic analysis. CLI queries return summaries; --detail retrieves code and logs.
-
-Template 1.3.0 collapses secondary statistics, filters and evidence, adds spacing and a separate repair-progress tab. Documentary progress never replaces historical results.
-
-See [workflow](references/progress-tracking.md), [synthetic report](examples/progress_report.html), or run `python scripts/demo_progress.py --workspace <empty-directory>`.
+| Topic | References |
+| --- | --- |
+| Usage and architecture | [CLI parameters](docs/usage.md) · [Architecture](docs/architecture.md) |
+| Requirements and quality | [Traceability](references/requirement-traceability.md) · [Quality rules](references/quality-rules.md) · [Coverage collection](references/coverage-collection.md) |
+| Comparison and versions | [Semantic matching](references/matching-rules.md) · [Git isolation](references/git-analysis.md) |
+| Data and extensions | [Schema](references/report-schema.md) · [Framework adapters](references/framework-adapters.md) · [Template extension](references/template-extension.md) |
+| Maintenance and license | [Changelog](CHANGELOG.md) · [MIT License](LICENSE) |

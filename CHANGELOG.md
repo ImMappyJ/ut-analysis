@@ -8,8 +8,8 @@
 
 ## 0.7.0 — 2026-10-26
 
-- Made requirement-led, single-project UT analysis a primary workflow; UI name is UT Analysis.
-- Kept `$ut-diff-report`, source/package paths, schema and report template compatible.
+- Made requirement-led, single-project UT analysis a primary workflow; UI name is UT-Analysis.
+- Preserved the existing installation, Python package, schema and report template compatibility.
 - Project preparation auto-selects audit for one project and compare for two, with neutral --project/--branch aliases.
 - Added requirement-first guidance and an actual single-project synthetic execution demo with explicit acceptance criteria and missing scenarios.
 - Explicit compare/full without project B still fails; existing Diff/query/progress workflows remain available.

@@ -1,4 +1,4 @@
-# 使用和参数
+# UT-Analysis 使用指南
 
 未指定任务模式时，一个项目自动进入 audit（按需求分析 UT）；两个项目进入 compare（对比），明确同时分析需求/质量则用 full。
 audit 只需 A；compare/full 必须 A+B。A/B 分支相互独立，缺省使用当前工作区，不切换原目录。
