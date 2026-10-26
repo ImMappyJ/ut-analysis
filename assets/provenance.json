@@ -1,0 +1,17 @@
+{
+  "template_version": "1.3.0",
+  "permission": "User authorized sanitized reuse and selected MIT on 2026-10-21",
+  "source": "User-approved local UT comparison report; no original business records included",
+  "css_sha256": "ae3a8b0fd60379991fa8b10ff0dbc70a04ff7cf48b65c27d7333a830110cc49e",
+  "original_js_sha256": "a1da265849ce28da8091c74dfdd87fbd73b6b820fc2efc40e079c875335774ba",
+  "changes": [
+    "Template placeholders and project metadata",
+    "Removed all private narratives and environment assumptions",
+    "Optional owner filtering and statistics",
+    "Explicit scenario-key runtime association",
+    "Independent audit/full quality views using the same UI tokens",
+    "Actual Git source context and dirty-worktree labels",
+    "Read-only report card queries and optional exact-ID deep links",
+    "User requested less crowded UI on 2026-10-22: collapsible overview/filter/detail sections and independent repair progress view; original palette CSS retained"
+  ]
+}

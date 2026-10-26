@@ -1,0 +1,4 @@
+interface:
+  display_name: "UT-Analysis"
+  short_description: "Analyze UTs against requirements; optionally compare"
+  default_prompt: "Use $ut-analysis to analyze this project's UTs against its requirements, explain coverage and assertion gaps, and prioritize improvements; compare another project only when requested."

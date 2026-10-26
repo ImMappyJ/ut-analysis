@@ -1,0 +1,15 @@
+[project]
+name = "ut-analysis"
+version = "0.7.1"
+description = "Portable Codex Skill for requirement-led UT analysis and optional project comparison"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = []
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]

@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1.0",
+  "report_metadata": {
+    "title": "Blue Sample · 单项目质量审查（合成示例）",
+    "run_id": "synthetic-audit-v1",
+    "generated_at": "2026-01-01T00:00:00Z",
+    "counting_policy": "统计顶层测试入口；参数模板与实际子实例分别列出，均不重复计入入口总数。",
+    "limitations": [
+      "所有示例均为合成代码；本示例没有实际执行测试，全部标为 NOT RUN。",
+      "不提供代码覆盖率，也不因缺少测试断言另一项目缺少业务实现。"
+    ],
+    "findings": [],
+    "notes": [
+      "静态示例的代码、路径和行号均为合成展示数据；它与实际执行演示夹具分别维护，不冒充真实扫描结果。"
+    ],
+    "mode": "audit"
+  },
+  "projects": [
+    {
+      "id": "A",
+      "name": "Blue Sample",
+      "languages": [
+        "Python"
+      ],
+      "frameworks": [
+        "unittest"
+      ],
+      "test_file_count": 1,
+      "scan": {
+        "scope": "synthetic example",
+        "errors": 0
+      }
+    }
+  ],
+  "modules": [
+    {
+      "id": "inventory",
+      "name": "库存预留",
+      "priority": "P0",
+      "priority_reason": "防止库存超分配是核心业务约束。",
+      "owner_ids": [
+        "owner-alpha"
+      ],
+      "project_scopes": {
+        "A": [
+          "test_inventory.py"
+        ],
+        "B": [
+          "test_orders.py"
+        ]
+      },
+      "mapping_evidence": [
+        "两侧直接调用库存数量扣减并检查剩余库存或拒绝非法数量。"
+      ]
+    },
+    {
+      "id": "auxiliary",
+      "name": "局部辅助行为",
+      "priority": "P1",
+      "owner_ids": [],
+      "mapping_evidence": [
+        "仅能从断言确认局部列表比较或字符串转换，不能扩写为完整业务流程。"
+      ],
+      "priority_reason": "仅验证局部常量比较或字符串转换，影响较低。"
+    }
+  ],
+  "owners": [
+    {
+      "id": "owner-alpha",
+      "name": "示例负责人甲"
+    }
+  ],
+  "test_cases": [
+    {
+      "id": "A-reserve",
+      "project_id": "A",
+      "module_id": "inventory",
+      "name": "test_reserve_valid",
+      "path": "test_inventory.py",
+      "line": 10,
+      "end_line": 11,
+      "kind": "unit",
+      "goal": "在库存为 8、预留数量为 3 时，确认剩余库存为 5。",
+      "evidence": [
+        "test_inventory.py:10 self.assertEqual(reserve(8, 3), 5)"
+      ],
+      "code": "def test_reserve_valid(self):\n    self.assertEqual(reserve(8, 3), 5)",
+      "assertions": [
+        {
+          "code": "self.assertEqual(reserve(8, 3), 5)",
+          "line": 11,
+          "method": "unittest assertion"
+        }
+      ],
+      "scenarios": [
+        "在库存为 8、预留数量为 3 时，确认剩余库存为 5。"
+      ],
+      "expectations": [
+        "self.assertEqual(reserve(8, 3), 5)"
+      ]
+    },
+    {
+      "id": "A-invalid",
+      "project_id": "A",
+      "module_id": "inventory",
+      "name": "test_reject_invalid",
+      "path": "test_inventory.py",
+      "line": 13,
+      "end_line": 15,
+      "kind": "unit",
+      "goal": "在申请预留零个单位时，确认拒绝请求并抛出 ValueError。",
+      "evidence": [
+        "test_inventory.py:13 with self.assertRaises(ValueError):\n    reserve(8, 0)"
+      ],
+      "code": "def test_reject_invalid(self):\n    with self.assertRaises(ValueError):\n        reserve(8, 0)",
+      "assertions": [
+        {
+          "code": "with self.assertRaises(ValueError):\n    reserve(8, 0)",
+          "line": 14,
+          "method": "unittest assertion"
+        }
+      ],
+      "scenarios": [
+        "在申请预留零个单位时，确认拒绝请求并抛出 ValueError。"
+      ],
+      "expectations": [
+        "with self.assertRaises(ValueError):\n    reserve(8, 0)"
+      ]
+    },
+    {
+      "id": "A-catalog",
+      "project_id": "A",
+      "module_id": "auxiliary",
+      "name": "test_catalog_empty",
+      "path": "test_inventory.py",
+      "line": 20,
+      "end_line": 21,
+      "kind": "unit",
+      "goal": "比较两个空列表相等；未调用目录业务，不能据此证明目录返回为空。",
+      "evidence": [
+        "test_inventory.py:20 self.assertEqual([], [])"
+      ],
+      "code": "def test_catalog_empty(self):\n    self.assertEqual([], [])",
+      "assertions": [
+        {
+          "code": "self.assertEqual([], [])",
+          "line": 21,
+          "method": "unittest assertion"
+        }
+      ],
+      "scenarios": [
+        "比较两个空列表相等；未调用目录业务，不能据此证明目录返回为空。"
+      ],
+      "expectations": [
+        "self.assertEqual([], [])"
+      ]
+    }
+  ],
+  "matches": [],
+  "execution_results": [
+    {
+      "test_id": "A-reserve",
+      "status": "NOT RUN",
+      "reason": "合成展示数据，没有运行证据；运行示例请使用 docs/usage.md 中的端到端命令。"
+    },
+    {
+      "test_id": "A-invalid",
+      "status": "NOT RUN",
+      "reason": "合成展示数据，没有运行证据；运行示例请使用 docs/usage.md 中的端到端命令。"
+    },
+    {
+      "test_id": "A-catalog",
+      "status": "NOT RUN",
+      "reason": "合成展示数据，没有运行证据；运行示例请使用 docs/usage.md 中的端到端命令。"
+    }
+  ],
+  "differences": [],
+  "quality": {
+    "sources": [],
+    "requirements": [],
+    "traces": [],
+    "issues": [
+      {
+        "id": "Q-CONSTANT",
+        "project_id": "A",
+        "test_ids": [
+          "A-catalog"
+        ],
+        "requirement_ids": [],
+        "type": "weak_assertion",
+        "severity": "medium",
+        "certainty": "suspected",
+        "verification": "heuristic",
+        "description": "常量空列表比较可能没有验证实际目录行为。",
+        "evidence": [
+          "test_inventory.py:21 self.assertEqual([], [])；未看到实际目录调用。"
+        ],
+        "recommendation": "若产品要求目录查询行为，应在获得可靠需求后对真实调用及其结果建立断言。"
+      }
+    ],
+    "coverage": [
+      {
+        "project_id": "A",
+        "collected": false,
+        "reason": "静态合成示例未运行覆盖率采集。"
+      }
+    ],
+    "reviewed_test_ids": {},
+    "policy": {}
+  }
+}

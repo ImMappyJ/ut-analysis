@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent repair annotation batch 1.0.0",
+  "type": "object",
+  "required": ["document_sha256", "base_revision", "removed", "sections"],
+  "properties": {
+    "document_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "base_revision": {"type": ["string", "null"]},
+    "refresh_sections": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "correction_reason": {"type": "string", "minLength": 1},
+    "removed": {"type": "array", "items": {"type": "string"}},
+    "sections": {"type": "array", "items": {
+      "type": "object", "required": ["key", "sha256", "items"],
+      "properties": {
+        "key": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/item"}}
+      }
+    }}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["issue_id", "targets", "status", "change", "summary", "reason", "next_step", "owner", "priority", "reported_at", "quote", "verification"],
+      "properties": {
+        "issue_id": {"type": "string", "minLength": 1},
+        "targets": {"type": "array", "items": {"type": "object", "required": ["project", "path", "name"], "properties": {
+          "project": {"enum": ["A", "B"]}, "path": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}
+        }}},
+        "status": {"enum": ["PLANNED", "IN_PROGRESS", "IMPLEMENTED", "BLOCKED", "DEFERRED", "ACCEPTED_DIFFERENCE", "CONFLICT"]},
+        "change": {"enum": ["UNKNOWN", "UNCHANGED", "MODIFIED", "ADDED", "REMOVED", "REVERTED"]},
+        "summary": {"type": "string", "minLength": 1}, "reason": {"type": "string", "minLength": 1},
+        "next_step": {"type": "string", "minLength": 1}, "owner": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["P0", "P1", "UNCLASSIFIED"]}, "reported_at": {"type": "string", "minLength": 1},
+        "quote": {"type": "string", "minLength": 1},
+        "verification": {"type": "object", "required": ["status", "scope"], "properties": {
+          "status": {"enum": ["PASS", "FAIL", "SKIP", "ERROR", "NOT RUN", "UNKNOWN"]}, "scope": {"type": "string", "minLength": 1}
+        }},
+        "timeline": {"type": "array", "items": {"type": "object", "required": ["status", "reported_at", "summary", "quote"], "properties": {
+          "status": {"enum": ["PLANNED", "IN_PROGRESS", "IMPLEMENTED", "BLOCKED", "DEFERRED", "ACCEPTED_DIFFERENCE", "CONFLICT"]},
+          "reported_at": {"type": "string"}, "summary": {"type": "string"}, "quote": {"type": "string", "minLength": 1}
+        }}}
+      }
+    }
+  }
+}

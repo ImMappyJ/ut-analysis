@@ -1,0 +1,30 @@
+name: validate
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.10', '3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+          cache: false
+      - run: python -m compileall -q scripts ut_diff_report
+      - run: python -m unittest discover -s tests -v
+      - run: python scripts/validate_data.py examples/sample_input.json
+      - run: python scripts/validate_report.py examples/sample_report.html
+      - run: python scripts/validate_data.py examples/audit_input.json
+      - run: python scripts/validate_report.py examples/audit_report.html
+      - run: python scripts/evaluate_quality.py examples/full_input.json
+      - run: python scripts/validate_report.py examples/full_report.html
+      - run: python scripts/validate_report.py examples/progress_report.html
+      - run: python scripts/check_release.py
